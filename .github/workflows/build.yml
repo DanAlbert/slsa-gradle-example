@@ -19,7 +19,11 @@ jobs:
       - name: Generate subject
         id: hash
         run: |
-          echo "hashes=$(sha256sum ./app/build/libs/* | base64 -w0)" >> "$GITHUB_OUTPUT"
+          # cd is needed to workaround
+          # https://github.com/slsa-framework/slsa-github-generator/issues/1225
+          # Fix is merged but hasn't shipped yet.
+          cd app/build/libs
+          echo "hashes=$(sha256sum * | base64 -w0)" >> "$GITHUB_OUTPUT"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
